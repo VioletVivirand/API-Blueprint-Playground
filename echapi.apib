@@ -1,0 +1,254 @@
+FORMAT: 1A
+HOST: https://api.root.com:port
+
+# Yout Dont't Know API
+
+您好。如果您不小心點了進來卻不知道這裡在做什麼，請您瞭解以下事項：
+
+1. 您絕對看不懂這個 API 在講什麼，**我是認真的**。
+2. 您如果覺得您看得懂一些關鍵字，卻又對她們的涵意感到疑惑，**這是正常的**。
+3. 看到這裡您應該是一頭霧水，不過沒有關係，*關掉瀏覽器視窗*是一件很簡單的事情，**請您現在照做**。 ^.<
+
+> tl;dr: 如果您看不懂，就表示這不是給您看的。所以，出去，現在！(Mazda 業務魂上身)
+
+## 功能修改備忘錄
+
+在本案中，`POST` 的部分應該全部改為 `GET`。
+
+雖然可以混著用，不過在一般 API 上面看到的慣例，`POST` 方法的請求通常會拿來修改資料，而回傳的 HTTP Status Code 則會是 `201`。
+
+雖然用 `POST` 方法有可以把傳送的值給包裝起來的用途，不過在這個案子裡**並沒有太多的意義**。
+
+# Group 圖表數據
+
+取得 [Highcharts](http://highcharts.com) 折線圖表所需要的數值資料。
+
+## 活性氯資料的預測圖表數值 [/predict]
+
+回傳的資料會是一個物件，裡面帶有許多的陣列。而陣列內的內容為：
+
+* 欄位 1 - 時間戳記 Timestamp（單位：毫秒）
+* 欄位 2 - 活性氯數值
+
+### 取得活性氯歷史資料 [POST]
+
+您可以取得一連串的活性氯預測數據，而這些數據的資料居間為 5 分鐘。這裡將會接收一個標示著第幾階段的 JSON 物件。
+
+* task (number) - 標示活性氯階段的數值。
+
+* Request (applicaiton/json)
+
+        {
+          "task": 1
+        }
+
+* Response 200 (application/json)
+    * Body
+
+            {
+              [1461196800,10],
+              [1461196801,20],
+              [1461196802,30]
+            }
+
+## 活性氯資料的歷史圖表數值 [/history]
+
+回傳的資料會是一個物件，裡面帶有許多的陣列。而陣列內的內容為：
+
+* 欄位 1 - 時間戳記 Timestamp（單位：毫秒）
+* 欄位 2 - 活性氯數值
+
+### 取得活性氯歷史資料 [POST]
+
+您可以取得一連串的活性氯監測的歷史數據，而這些數據的資料居間約為 8 小時。這裡將會接收一個標示著第幾階段的 JSON 物件。
+
+* task (number) - 標示活性氯階段的數值。
+
+* Request (applicaiton/json)
+
+        {
+          "task": 1
+        }
+
+* Response 200 (application/json)
+    * Body
+
+            {
+              [1461196800,10],
+              [1461196801,20],
+              [1461196802,30]
+            }
+
+# Group 一般數據
+
+## 活性氯預測目標值 [/target]
+
+回傳的資料將是一組單一的數字，表示活性氯的預測目標數值。
+
+### 取得活性氯預測目標值 [POST]
+
+您可以取得關於最新一筆活性氯的預測目標數據。這裡將會接收一個標示著第幾階段的 JSON 物件。
+
+* task (number) - 標示活性氯階段的數值。
+
+* Request (applicaiton/json)
+
+        {
+          "task": 1
+        }
+
+* Response 200 (text/plain)
+    * Body
+
+            28.02
+
+## 活性氯點位即時資訊 [/realtime]
+
+回傳的資料會是一個帶有許多物件的陣列，而陣列內的物件會有以下的屬性：
+
+* node - 點位的名稱
+* value - 該點位目前的活性氯數值
+
+### 取得活性氯點位即時資訊 [POST]
+
+您可以取得各個點位的活性氯資訊。這裡將會接收一個標示著第幾階段的 JSON 物件。
+
+* task (number) - 標示活性氯階段的數值。
+
+* Request (applicaiton/json)
+
+        {
+          "task": 1
+        }
+
+* Response 200 (application/json)
+    * Body
+
+            [
+              {
+                "node":"MECH_FIC-311",
+                "value":241.03
+              },
+              {
+                "node":"MECH_FIC-318",
+                "value":12974.15
+              },
+              {
+                "node":"MECH_FIC-317",
+                "value":8.29
+              },
+            ]
+
+## 點位調整資訊 [/adjustment]
+
+回傳的資料會是一個帶有許多物件的陣列，而陣列內的物件會有以下的屬性：
+
+* feature - x 點位
+* value - x 點位調整數值
+* no - 調整順序
+
+### 取得各點位需要調整的資訊 [POST]
+
+您可以取得各個點位需要調整的資訊。這裡將會接收一個標示著第幾階段的 JSON 物件。
+
+* task (number) - 標示活性氯階段的數值。
+
+* Request (applicaiton/json)
+
+        {
+          "task": 1
+        }
+
+* Response 200 (application/json)
+    * Body
+
+            [
+              {
+                "feature":"MECH_FIC-311",
+                "value":53.1,
+                "no":1
+              }
+            ]
+
+## 異常資訊 [/error]
+
+回傳的資料會是一個帶有許多物件的陣列，而陣列內的物件會有以下的屬性：
+
+* msgid - 訊息序號
+* updatetime - 異常訊息時間，格式為：`YYYY-MM-DD HH:MM:SS`
+* warningmsg - 警告訊息內容
+* msgtype - 異常類型
+
+### 取得近 50 筆異常資訊 [POST]
+
+您可以取得各個點位的活性氯資訊。這裡將會接收一個標示著第幾階段的 JSON 物件。
+
+* task (number) - 標示活性氯階段的數值。
+
+* Request (applicaiton/json)
+
+        {
+          "task": 1
+        }
+
+* Response 200 (application/json)
+    * Body
+
+            [
+              {
+                "msgid":"6344",
+                "updatetime":"2017-04-21 09:00:00",
+                "warningmsg":"活性氯濃度過高",
+                "msgtype":"活性氯濃度異常"
+              }
+            ]
+
+## 預測誤差 [/predicterror]
+
+回傳的資料將是一組單一的數字，表示活性氯的預測目標值與實際值之間的差異，即為預測誤差值。
+
+### 取得預測誤差值 [POST]
+
+您可以取得在特定時間點時活性氯的預測誤差值。這裡將會接收一個標示著第幾階段、以及欲查詢時間的 JSON 物件。
+
+* task (number) - 標示活性氯階段的數值。
+
+* Request (applicaiton/json)
+
+        {
+          "task": 1,
+          "datetime":"2017-04-21 09:00:00"
+        }
+
+* Response 200 (text/plain)
+    * Body
+
+            1.52
+
+## 相關係數 [/corr]
+
+回傳的資料將是一組單一的數字，表示活性氯的相關係數。
+
+::: info
+#### <i class="fa fa-info"></i> Info
+這個敘述對嗎？
+:::
+
+### 取得相關係數 [POST]
+
+您可以取得在特定時間點時活性氯的預測誤差值。這裡將會接收一個標示著第幾階段、欲查詢時間、以及查詢變數的名稱的 JSON 物件。
+
+* task (number) - 標示活性氯階段的數值。
+
+* Request (applicaiton/json)
+
+        {
+          "task": 1,
+          "datetime":"2017-04-21 09:00:00",
+          "variable":"MECH_FIC-311"
+        }
+
+* Response 200 (text/plain)
+    * Body
+
+            0.7
