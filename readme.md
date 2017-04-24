@@ -11,5 +11,5 @@
 ## Build
 
 ```bash
-aglio -i echapi.apib --theme-template triple -o ./dist/index.html
+aglio -i echapi.apib --theme-template triple -o ./docs/index.html
 ```
