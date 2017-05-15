@@ -135,9 +135,10 @@ HOST: https://api.root.com:port
 
 回傳的資料會是一個帶有許多物件的陣列，而陣列內的物件會有以下的屬性：
 
-* feature - x 點位
-* value - x 點位調整數值
-* no - 調整順序
+* FeatureName - x 點位
+* GAdjustValue - x 點位調整數值
+* HAdjustNo - 調整順序
+* IAdjTarget - 調整後的數值
 
 ### 取得各點位需要調整的資訊 [GET]
 
@@ -156,9 +157,10 @@ HOST: https://api.root.com:port
 
             [
               {
-                "feature":"MECH_FIC-311",
-                "value":53.1,
-                "no":1
+                "FeatureName":"MECH_FIC-311",
+                "GAdjustValue":53.1,
+                "HAdjustNo":2,
+                "IAdjTarget":28.84
               }
             ]
 
