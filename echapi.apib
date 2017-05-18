@@ -11,13 +11,11 @@ HOST: https://api.root.com:port
 
 > tl;dr: 如果您看不懂，就表示這不是給您看的。所以，出去，現在！(Mazda 業務魂上身)
 
-# Group 圖表數據
-
-取得 [Highcharts](http://highcharts.com) 折線圖表所需要的數值資料。
+# Group 所有資源
 
 ## 活性氯資料的預測圖表數值 [/predict]
 
-回傳的資料會是一個物件，裡面帶有許多的陣列。而陣列內的內容為：
+回傳的資料會是一個物件，裡面帶有許多的陣列，用來製作 [Highcharts](http://highcharts.com) 折線圖表。而陣列內的內容為：
 
 * 欄位 1 - 時間戳記 Timestamp（單位：毫秒）
 * 欄位 2 - 活性氯數值
@@ -42,36 +40,6 @@ HOST: https://api.root.com:port
               [1461196801,20],
               [1461196802,30]
             }
-
-## 活性氯資料的歷史圖表數值 [/history]
-
-回傳的資料會是一個物件，裡面帶有許多的陣列。而陣列內的內容為：
-
-* 欄位 1 - 時間戳記 Timestamp（單位：毫秒）
-* 欄位 2 - 活性氯數值
-
-### 取得活性氯歷史資料 [GET]
-
-您可以取得一連串的活性氯監測的歷史數據，而這些數據的資料居間約為 8 小時。這裡將會接收一個標示著第幾階段的 JSON 物件。
-
-* task (number) - 標示活性氯階段的數值。
-
-* Request (applicaiton/json)
-
-        {
-          "task": 1
-        }
-
-* Response 200 (application/json)
-    * Body
-
-            {
-              [1461196800,10],
-              [1461196801,20],
-              [1461196802,30]
-            }
-
-# Group 一般數據
 
 ## 活性氯預測目標值 [/target]
 
@@ -142,14 +110,15 @@ HOST: https://api.root.com:port
 
 ### 取得各點位需要調整的資訊 [GET]
 
-您可以取得各個點位需要調整的資訊。這裡將會接收一個標示著第幾階段的 JSON 物件。
+您可以取得各個點位需要調整的資訊。這裡將會接收一個標示著第幾階段、以及希望調整的目標值的 JSON 物件。
 
 * task (number) - 標示活性氯階段的數值。
 
 * Request (applicaiton/json)
 
         {
-          "task": 1
+          "task":1,
+          "targetValue":28
         }
 
 * Response 200 (application/json)
@@ -199,50 +168,42 @@ HOST: https://api.root.com:port
 
 ## 預測誤差 [/predicterror]
 
-回傳的資料將是一組單一的數字，表示活性氯的預測目標值與實際值之間的差異，即為預測誤差值。
+回傳的資料將會有三個物件，分別存放著顯示歷史數據以及預測數據的圖表資料、預測出來的相關係數值、以及所有資料表格的詳細數據。
 
 ### 取得預測誤差值 [GET]
 
-您可以取得在特定時間點時活性氯的預測誤差值。這裡將會接收一個標示著第幾階段、以及欲查詢時間的 JSON 物件。
+您可以取得在特定時間之間的活性氯歷史數據、預測數據、以及兩者的相關係數。這裡將會接收一個標示著第幾階段、欲查詢區間的起始時間、以及欲查詢區間的結束時間的 JSON 物件。
 
 * task (number) - 標示活性氯階段的數值。
-* datetime (string) - 欲計算預測誤差值的時間點。
+* datetimefrom (string) - 欲查詢資料區間的起始時間。
+* datetimeto (string) - 欲查詢資料區間的結束時間。
 
 * Request (applicaiton/json)
 
         {
           "task": 1,
-          "datetime":"2017-04-21 09:00:00"
+          "datetimefrom":"2017-04-21 09:00:00",
+          "datetimeto":"2017-04-28 09:00:00"
         }
 
 * Response 200 (text/plain)
     * Body
 
-            1.52
-
-## 相關係數 [/corr]
-
-回傳的資料將是一組單一的數字，表示活性氯的相關係數。
-
-> [NOTE] 這個敘述對嗎～？
-
-### 取得相關係數 [GET]
-
-您可以取得在特定時間點時活性氯的預測相關係數。這裡將會接收一個標示著第幾階段、欲查詢時間、以及查詢變數的名稱的 JSON 物件。
-
-* task (number) - 標示活性氯階段的數值。
-* datetime (string) - 欲計算相關係數的時間點。
-* variable (string) - 欲查詢的變數名稱。
-
-* Request (applicaiton/json)
-
-        {
-          "task": 1,
-          "datetime":"2017-04-21 09:00:00",
-          "variable":"MECH_FIC-311"
-        }
-
-* Response 200 (text/plain)
-    * Body
-
-            0.7
+            {
+              "chart": 
+                [
+                  [1461196800,10,30],
+                  [1461196801,20,20],
+                  [1461196802,30,10]
+                ],
+              "data":
+                [
+                  {
+                    "datetime":"2017-04-21 09:00:00",
+                    "historyrecord":10,
+                    "predictrecord":20,
+                    "error":10
+                  }
+                ],
+              "coefficient":0.97
+            }
