@@ -117,8 +117,7 @@ HOST: https://api.root.com:port
 * Request (applicaiton/json)
 
         {
-          "task":1,
-          "targetValue":28
+          "task":1
         }
 
 * Response 200 (application/json)
@@ -207,3 +206,21 @@ HOST: https://api.root.com:port
                 ],
               "coefficient":0.97
             }
+
+## 更新目標值 [/updatesql]
+
+您可以藉此更改在 SQL Server 裡目前設定要調整的目標數值。
+
+### 更新活性氯目標值 [PUT]
+
+* task (number) - 標示活性氯階段的數值。
+* targetvalue (string) - 欲設定活性氯的目標數值。
+
+* Request (applicaiton/json)
+
+        {
+          "task": 1,
+          "targetvalue": "28"
+        }
+
+* Response 202
